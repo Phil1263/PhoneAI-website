@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PhoneAI - Premium Technical Smartphone Advisor</title>
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=Outfit:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <!-- FontAwesome for Premium Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- MarkedJS for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body class="dark-mode">
+    <div id="app">
+        <!-- Sidebar -->
+        <aside id="sidebar" class="sidebar">
+            <div class="sidebar-header">
+                <div class="logo">
+                    <span class="logo-sparkle"><i class="fa-solid fa-wand-magic-sparkles"></i></span>
+                    <span class="logo-text">Phone<span>AI</span></span>
+                </div>
+                <button id="sidebar-toggle" class="icon-btn sidebar-close-btn" title="Toggle Sidebar">
+                    <i class="fa-solid fa-sidebar"></i>
+                </button>
+            </div>
+            
+            <button id="new-chat-btn" class="new-chat-btn">
+                <i class="fa-solid fa-plus"></i>
+                <span>New consult</span>
+            </button>
+            
+            <div class="sidebar-content">
+                <div class="sidebar-section">
+                    <h3>Recent Specs Searches</h3>
+                    <ul id="search-history" class="history-list">
+                        <li class="history-item" data-prompt="Compare iPhone 17 Pro Max vs Galaxy S26 Ultra">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>iPhone 17 Pro vs S26 Ultra</span>
+                        </li>
+                        <li class="history-item" data-prompt="Which smartphone has the best battery life under 600€?">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>Best battery under 600€</span>
+                        </li>
+                        <li class="history-item" data-prompt="Explain the difference between camera sensor sizes and focal length">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>Smartphone camera sensor sizes</span>
+                        </li>
+                        <li class="history-item" data-prompt="Google Pixel 10 Pro Tensor G5 specifications">
+                            <i class="fa-regular fa-comment"></i>
+                            <span>Pixel 10 Pro Tensor G5 specs</span>
+                        </li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="avatar"><i class="fa-solid fa-user-tie"></i></div>
+                    <div class="user-info">
+                        <span class="username">Developer Session</span>
+                        <span class="status">Online</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Window Container -->
+        <main class="main-container">
+            <!-- Top Navbar -->
+            <header class="navbar">
+                <div class="navbar-left">
+                    <button id="hamburger-menu" class="icon-btn hamburger-btn" title="Open Sidebar">
+                        <i class="fa-solid fa-bars"></i>
+                    </button>
+                    <div class="mobile-logo logo">
+                        <span class="logo-text">Phone<span>AI</span></span>
+                    </div>
+                </div>
+                
+                <div class="navbar-actions">
+                    <!-- Audio Autoplay Controls -->
+                    <button id="mute-toggle" class="nav-action-btn" title="Toggle Auto-Voice Out">
+                        <i class="fa-solid fa-volume-high"></i>
+                        <span>Voice Autoplay: ON</span>
+                    </button>
+                    
+                    <button id="clear-chat" class="nav-action-btn border-btn" title="Clear Chat History">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>Clear History</span>
+                    </button>
+                </div>
+            </header>
+
+            <!-- Chat viewport -->
+            <section id="chat-viewport" class="chat-viewport">
+                <!-- Welcome Dashboard (Initial State) -->
+                <div id="welcome-dashboard" class="welcome-dashboard">
+                    <div class="welcome-header">
+                        <h1 class="welcome-title">Hello.</h1>
+                        <h2 class="welcome-subtitle">How can I help you choose or compare your next smartphone?</h2>
+                    </div>
+                    
+                    <div class="suggestion-grid">
+                        <div class="suggestion-card" data-prompt="Compare Apple iPhone 17 Pro Max vs Samsung Galaxy S26 Ultra. Highlight display, camera, and chipset.">
+                            <div class="card-icon"><i class="fa-solid fa-scale-balanced"></i></div>
+                            <h4>Compare flagship specs</h4>
+                            <p>iPhone 17 Pro Max vs Galaxy S26 Ultra</p>
+                        </div>
+                        
+                        <div class="suggestion-card" data-prompt="What are the best mid-range smartphones under 500€ released in 2026?">
+                            <div class="card-icon"><i class="fa-solid fa-euro-sign"></i></div>
+                            <h4>Best under 500€</h4>
+                            <p>Top value recommendations for 2026</p>
+                        </div>
+                        
+                        <div class="suggestion-card" data-prompt="Explain the technical specs of the Google Tensor G5 chip inside the Pixel 10.">
+                            <div class="card-icon"><i class="fa-solid fa-microchip"></i></div>
+                            <h4>Tensor G5 chipset details</h4>
+                            <p>Detailed architecture and node size</p>
+                        </div>
+                        
+                        <div class="suggestion-card" data-prompt="Tell me about the new battery technologies used in 2026 smartphones (silicon-carbon batteries).">
+                            <div class="card-icon"><i class="fa-solid fa-battery-three-quarters"></i></div>
+                            <h4>Silicon-Carbon batteries</h4>
+                            <p>Understand the new charging technology</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Chat Log -->
+                <div id="chat-history" class="chat-history hidden">
+                    <!-- Messages will be injected dynamically -->
+                </div>
+            </section>
+
+            <!-- Bottom Console (Input area) -->
+            <footer class="input-panel">
+                <!-- Tool Active Alert -->
+                <div id="tool-alert" class="tool-alert hidden">
+                    <span class="tool-spinner"><i class="fa-solid fa-circle-notch fa-spin"></i></span>
+                    <span id="tool-alert-text">Querying smartphone_tech_database...</span>
+                </div>
+                
+                <!-- Recording / Voice Visualizer Panel -->
+                <div id="voice-panel" class="voice-panel hidden">
+                    <div class="voice-wave-container">
+                        <span class="bar long"></span>
+                        <span class="bar short"></span>
+                        <span class="bar normal"></span>
+                        <span class="bar long"></span>
+                        <span class="bar short"></span>
+                        <span class="bar normal"></span>
+                        <span class="bar long"></span>
+                    </div>
+                    <span class="voice-status">Recording voice... Speak now.</span>
+                    <button id="cancel-voice-btn" class="cancel-voice-btn" title="Cancel Recording">
+                        <i class="fa-solid fa-xmark"></i>
+                    </button>
+                </div>
+
+                <!-- Pill Input bar -->
+                <div class="input-bar-wrapper">
+                    <div class="pill-input-bar">
+                        <!-- Microphone button -->
+                        <button id="mic-btn" class="input-pill-btn mic-inactive" title="Record Voice">
+                            <i class="fa-solid fa-microphone"></i>
+                        </button>
+                        
+                        <!-- Input Box -->
+                        <textarea id="text-input" placeholder="Message PhoneAI..." rows="1" autocomplete="off"></textarea>
+                        
+                        <!-- Send Button -->
+                        <button id="send-btn" class="input-pill-btn send-btn" disabled title="Send Prompt">
+                            <i class="fa-solid fa-paper-plane"></i>
+                        </button>
+                    </div>
+                </div>
+                
+                <div class="disclaimer">
+                    PhoneAI can make mistakes. Verify technical specs before making purchase decisions.
+                </div>
+            </footer>
+        </main>
+    </div>
+
+    <!-- Hidden element for playing TTS -->
+    <div id="audio-container" style="display: none;"></div>
+    
+    <script src="/static/script.js"></script>
+</body>
+</html>

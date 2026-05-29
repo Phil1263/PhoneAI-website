@@ -3,6 +3,8 @@
 ## 📖 Project Overview
 **PhoneAI** is an elite, highly technical multimodal AI chatbot designed to act as an expert smartphone advisor. Built as a final bootcamp project, it utilizes a Retrieval-Augmented Generation (RAG) architecture to answer user questions by analyzing tech review videos from YouTube. By combining natural language processing, modern agentic workflows, and speech recognition/synthesis, PhoneAI delivers accurate, context-aware smartphone recommendations.
 
+
+
 ## 💼 Business Case & Value
 Building a chatbot that translates YouTube video content into an interactive QA system offers several compelling business advantages:
 * **Enhanced Accessibility:** The integration of audio inputs (Speech-to-Text) and outputs (Text-to-Speech) broadens the audience reach, specifically assisting users with visual or hearing impairments.
@@ -33,6 +35,10 @@ The project is built around a split-development workflow:
 * **Observability:** LangSmith for end-to-end tracing.
 
 ---
+### 🎥 Demo video : https://youtu.be/94hkT7CmdLQ
+---
+
+[![Demo](images/Demo.gif)](https://youtu.be/94hkT7CmdLQ)
 
 ## ⚙️ How to Run & Deploy the Application
 

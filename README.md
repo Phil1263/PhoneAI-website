@@ -26,6 +26,13 @@ The project is built around a split-development workflow:
 * **Agentic Decision Making:** The AI autonomously decides whether to search the vector database for smartphone specs or use its internal knowledge for general conversation.
 * **Short-Term Session Memory:** Memory management powered by LangGraph's in-memory `MemorySaver` checkpointer.
 
+## 🛡️ Security & API Quota Limits
+To prevent excessive requests from exhausting your OpenAI budget on public deployments, PhoneAI implements a built-in in-memory rate limiter:
+*   **User IP Limit**: Restricted to a maximum of **5 requests per minute per IP address**.
+*   **Global Server Cap**: Restricted to a maximum of **200 total requests per 24 hours** across all users.
+*   **Warning**: If you exceed these limits, the chatbot will block requests temporarily and display a warning message in the chat log. **Please be mindful not to exceed these thresholds to keep the service running smoothly.**
+*   **Configuration**: You can easily customize these caps in your `.env` file by setting `RATE_LIMIT_IP` and `RATE_LIMIT_GLOBAL` variables.
+
 ## 🛠️ Architecture & Tech Stack
 * **Language:** Python 3.10+
 * **LLM & Embeddings:** OpenAI `gpt-4o-mini`, `text-embedding-ada-002`
@@ -58,6 +65,9 @@ This is the recommended deployment method. It combines a state-of-the-art FastAP
 
 **Cloud Deployment (Split-Deployment):**
 Deploy the `main.py` backend to a Python-friendly cloud provider (like Render, Railway, or a VPS). Update the API endpoint URL at the top of your `static/script.js` file, and upload the `static/` folder to any standard FTP server or static hosting service (like Vercel).
+
+> [!NOTE]
+> If hosted on **Render's Free Tier**, the backend service automatically spins down (goes to sleep) after a period of inactivity. As a result, **the first API request might experience a cold-start delay of 50-90 seconds** while the server spins back up. Subsequent interactions will be instantaneous.
 
 ### Method 2: Gradio Interface Prototyping
 If you want to quickly test the application's logic or debug the agent without launching a full web server, you can use the built-in Gradio interface directly from the main notebook.

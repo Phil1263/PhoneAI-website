@@ -3,6 +3,30 @@
 const API_BASE_URL = ""; 
 
 document.addEventListener("DOMContentLoaded", () => {
+    // Render Cold Start Banner Dismiss Logic
+    const coldStartBanner = document.getElementById("render-coldstart-banner");
+    const closeBannerBtn = document.getElementById("close-banner-btn");
+    
+    if (localStorage.getItem("phoneai_banner_dismissed") === "true") {
+        if (coldStartBanner) coldStartBanner.remove();
+    } else {
+        if (closeBannerBtn && coldStartBanner) {
+            closeBannerBtn.addEventListener("click", () => {
+                coldStartBanner.style.transition = "all 0.3s ease";
+                coldStartBanner.style.opacity = "0";
+                coldStartBanner.style.transform = "translateY(-20px)";
+                coldStartBanner.style.height = "0";
+                coldStartBanner.style.paddingTop = "0";
+                coldStartBanner.style.paddingBottom = "0";
+                coldStartBanner.style.borderBottom = "none";
+                setTimeout(() => {
+                    coldStartBanner.remove();
+                }, 300);
+                localStorage.setItem("phoneai_banner_dismissed", "true");
+            });
+        }
+    }
+
     // State Variables
     let threadId = sessionStorage.getItem("phoneai_thread_id");
     if (!threadId) {

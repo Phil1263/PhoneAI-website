@@ -24,6 +24,62 @@
     display: none !important;
 }
 
+/* Cold Start Banner Styling */
+.coldstart-banner {
+    background: linear-gradient(90deg, rgba(66, 133, 242, 0.12) 0%, rgba(168, 115, 232, 0.12) 100%);
+    border-bottom: 1px solid rgba(168, 115, 232, 0.25);
+    padding: 10px 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    font-size: 0.82rem;
+    color: var(--text-primary);
+    animation: fadeInDown 0.5s ease;
+    z-index: 95;
+    overflow: hidden;
+}
+
+.banner-content {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    line-height: 1.4;
+}
+
+.banner-content i {
+    color: var(--accent-blue);
+    font-size: 0.95rem;
+}
+
+.close-banner-btn {
+    color: var(--text-secondary);
+    font-size: 0.9rem;
+    padding: 4px;
+    border-radius: 50%;
+    width: 24px;
+    height: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.close-banner-btn:hover {
+    background-color: rgba(255, 255, 255, 0.08);
+    color: var(--text-primary);
+}
+
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
 /* Base Styles */
 * {
     box-sizing: border-box;

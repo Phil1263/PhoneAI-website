@@ -70,6 +70,17 @@
 
         <!-- Main Window Container -->
         <main class="main-container">
+            <!-- Cold Start Notice Banner -->
+            <div id="render-coldstart-banner" class="coldstart-banner">
+                <div class="banner-content">
+                    <i class="fa-solid fa-circle-info"></i>
+                    <span><strong>Note:</strong> PhoneAI is hosted on a free Render tier. The first request may take 50-90 seconds to wake up the server. Subsequent replies will be instant!</span>
+                </div>
+                <button id="close-banner-btn" class="close-banner-btn" title="Dismiss Message">
+                    <i class="fa-solid fa-xmark"></i>
+                </button>
+            </div>
+
             <!-- Top Navbar -->
             <header class="navbar">
                 <div class="navbar-left">

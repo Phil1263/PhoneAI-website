@@ -1,5 +1,11 @@
 # 📱 PhoneAI - Elite Technical Smartphone Advisor
 
+### 🌐 Live Web Application: [https://phoneai.onrender.com/](https://phoneai.onrender.com/)
+
+> [WARNING]
+> **Please review the [Security & API Quota Limits](#️-security--api-quota-limits) section below before testing the live website to avoid exceeding the allowed quotas.**
+
+
 ## 📖 Project Overview
 **PhoneAI** is an elite, highly technical multimodal AI chatbot designed to act as an expert smartphone advisor. Built as a final bootcamp project, it utilizes a Retrieval-Augmented Generation (RAG) architecture to answer user questions by analyzing tech review videos from YouTube. By combining natural language processing, modern agentic workflows, and speech recognition/synthesis, PhoneAI delivers accurate, context-aware smartphone recommendations.
 

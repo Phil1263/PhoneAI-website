@@ -2,7 +2,7 @@ import os
 import json
 import time
 import logging
-from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Response
+from fastapi import FastAPI, UploadFile, File, Form, HTTPException, Response, Request
 from fastapi.responses import StreamingResponse, FileResponse
 from fastapi.staticfiles import StaticFiles
 from fastapi.middleware.cors import CORSMiddleware
@@ -25,6 +25,53 @@ if os.getenv("LANGCHAIN_TRACING_V2") == "true":
     os.environ["LANGCHAIN_ENDPOINT"] = os.getenv("LANGCHAIN_ENDPOINT", "https://eu.api.smith.langchain.com")
     os.environ["LANGCHAIN_API_KEY"] = os.getenv("LANGCHAIN_API_KEY", "")
     os.environ["LANGCHAIN_PROJECT"] = os.getenv("LANGCHAIN_PROJECT", "PhoneAI_Project")
+
+from collections import defaultdict
+
+class SecurityLimiter:
+    def __init__(self, requests_per_minute: int = 5, global_daily_cap: int = 200):
+        self.requests_per_minute = requests_per_minute
+        self.global_daily_cap = global_daily_cap
+        
+        # In-memory stores: IP -> list of timestamps
+        self.user_requests = defaultdict(list)
+        # Global request timestamps
+        self.global_requests = []
+        
+    def check_limit(self, client_ip: str) -> tuple[bool, str]:
+        current_time = time.time()
+        
+        # 1. Check Global Daily Cap (sliding 24-hour window)
+        one_day_ago = current_time - 86400
+        self.global_requests = [t for t in self.global_requests if t > one_day_ago]
+        if len(self.global_requests) >= self.global_daily_cap:
+            return False, "Global daily request quota reached. Please try again tomorrow!"
+            
+        # 2. Check User Minute Cap (sliding 60-second window)
+        one_minute_ago = current_time - 60
+        user_history = self.user_requests[client_ip]
+        user_history = [t for t in user_history if t > one_minute_ago]
+        self.user_requests[client_ip] = user_history
+        
+        if len(user_history) >= self.requests_per_minute:
+            return False, f"Too many requests. Limit is {self.requests_per_minute} messages per minute per user."
+            
+        # Register request
+        self.user_requests[client_ip].append(current_time)
+        self.global_requests.append(current_time)
+        return True, ""
+
+# Instantiate limiter (configurable via env variables)
+RATE_LIMIT_IP = int(os.getenv("RATE_LIMIT_IP", "5"))
+RATE_LIMIT_GLOBAL = int(os.getenv("RATE_LIMIT_GLOBAL", "200"))
+limiter = SecurityLimiter(requests_per_minute=RATE_LIMIT_IP, global_daily_cap=RATE_LIMIT_GLOBAL)
+
+def get_client_ip(request: Request) -> str:
+    # Check X-Forwarded-For header if behind a proxy like Render
+    x_forwarded_for = request.headers.get("X-Forwarded-For")
+    if x_forwarded_for:
+        return x_forwarded_for.split(",")[0].strip()
+    return request.client.host if request.client else "127.0.0.1"
 
 # Define tools
 tools = []
@@ -220,7 +267,12 @@ def stream_agent_response(message: str, thread_id: str):
 
 # API Endpoints
 @app.post("/api/chat")
-def chat_endpoint(request: ChatRequest):
+def chat_endpoint(request: ChatRequest, request_obj: Request):
+    client_ip = get_client_ip(request_obj)
+    allowed, msg = limiter.check_limit(client_ip)
+    if not allowed:
+        raise HTTPException(status_code=429, detail=msg)
+        
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OpenAI API Key is not configured on the server. Please check your .env file.")
     return StreamingResponse(
@@ -229,7 +281,12 @@ def chat_endpoint(request: ChatRequest):
     )
 
 @app.post("/api/stt")
-async def speech_to_text(file: UploadFile = File(...)):
+async def speech_to_text(request_obj: Request, file: UploadFile = File(...)):
+    client_ip = get_client_ip(request_obj)
+    allowed, msg = limiter.check_limit(client_ip)
+    if not allowed:
+        raise HTTPException(status_code=429, detail=msg)
+        
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OpenAI API Key is not configured on the server.")
     
@@ -271,7 +328,12 @@ class TTSRequest(BaseModel):
     text: str
 
 @app.post("/api/tts")
-async def text_to_speech(request: TTSRequest):
+async def text_to_speech(request: TTSRequest, request_obj: Request):
+    client_ip = get_client_ip(request_obj)
+    allowed, msg = limiter.check_limit(client_ip)
+    if not allowed:
+        raise HTTPException(status_code=429, detail=msg)
+        
     if not OPENAI_API_KEY:
         raise HTTPException(status_code=500, detail="OpenAI API Key is not configured on the server.")
     if not request.text.strip():

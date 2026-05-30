@@ -215,6 +215,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             
             if (!response.ok) {
+                if (response.status === 429) {
+                    try {
+                        const errData = await response.json();
+                        throw new Error(errData.detail || "Quota exceeded.");
+                    } catch (e) {
+                        throw new Error(e.message || "Quota exceeded.");
+                    }
+                }
                 throw new Error(`Server returned status: ${response.status}`);
             }
             
@@ -406,6 +414,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             
             if (!response.ok) {
+                if (response.status === 429) {
+                    try {
+                        const errData = await response.json();
+                        throw new Error(errData.detail || "Audio rate limited.");
+                    } catch (e) {
+                        throw new Error(e.message || "Audio rate limited.");
+                    }
+                }
                 throw new Error("TTS generation failed");
             }
             
@@ -555,6 +571,14 @@ document.addEventListener("DOMContentLoaded", () => {
             });
             
             if (!response.ok) {
+                if (response.status === 429) {
+                    try {
+                        const errData = await response.json();
+                        throw new Error(errData.detail || "Transcription rate limited.");
+                    } catch (e) {
+                        throw new Error(e.message || "Transcription rate limited.");
+                    }
+                }
                 throw new Error("Voice transcription failed");
             }
             
